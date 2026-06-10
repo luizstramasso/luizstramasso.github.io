@@ -1,0 +1,133 @@
+@page "/principiosSolid/dip"
+
+<PageTitle>Princípio da Inversão de Dependência (DIP)</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Princípio da Inversão de Dependência (DIP)</MudText>
+<MudText Class="mb-8">O Princípio da Inversão de Dependência (Dependency Inversion Principle - DIP) é um conceito
+    fundamental na engenharia de software moderna. Este documento apresenta um resumo detalhado sobre o tema, baseado
+    nesse <MudLink Href="https://youtu.be/s8g32ePcPps" Target="_blank" EndIcon="@Icons.Custom.Brands.YouTube">vídeo
+</MudLink>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">1. Definição e Origem</MudText>
+<MudText Class="mb-8">
+    O Princípio da Inversão de Dependência é a letra "D" do acrônimo <b>SOLID</b>, um conjunto de
+    cinco princípios de design orientado a objetos introduzidos por Robert C. Martin (conhecido como Uncle Bob) no final
+    da década de 1990. O DIP serve como a espinha dorsal para diversas abordagens arquiteturais modernas, incluindo a
+    Clean Architecture, a Arquitetura Hexagonal (também conhecida como Ports and Adapters) e a Onion Architecture.
+    <br>
+    A essência do DIP é inverter a forma tradicional como as dependências são estruturadas em um sistema, promovendo o
+    desacoplamento entre os componentes.
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">2. Objetivos Principais</MudText>
+<MudText Class="mb-8">
+    A aplicação do DIP visa alcançar três objetivos fundamentais no desenvolvimento de software:
+    <br>
+    <li>
+        <b>Flexibilidade:</b> Permite que o software cresça e incorpore novas funcionalidades de maneira saudável e
+        sustentável ao longo do tempo.
+    </li>
+    <li>
+
+        <b>Manutenção:</b> Facilita a substituição ou atualização de componentes sem o risco de quebrar o código
+        existente em outras partes do sistema.
+    </li>
+    <li>
+        <b>Testabilidade:</b> Torna o código significativamente mais fácil de ser testado de forma isolada (testes de
+        unidade), permitindo o uso de <i>mocks</i> ou <i>stubs</i> para simular comportamentos de dependências externas.
+    </li>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">3. As Duas Regras de Ouro do DIP</MudText>
+<MudText Class="mb-8">
+    O princípio é formalmente definido por duas regras essenciais:
+    <br>
+    1. <b>Módulos de alto nível não devem depender de módulos de baixo nível:</b> Ambos devem depender de abstrações.
+    <br>
+    2. <b>Abstrações não devem depender de detalhes:</b> Os detalhes devem depender de abstrações.
+    <br>
+    Em termos práticos, a recomendação central é: <b>programe para interfaces, não para implementações concretas.</b>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">4. Exemplo Prático: Processamento de Pedidos</MudText>
+<MudText Class="mb-8">
+    Para ilustrar a aplicação do DIP, considere um cenário de processamento de pagamentos em um sistema de e-commerce.
+</MudText>
+
+<MudText Typo="Typo.h6" GutterBottom="true">O Problema: Código Fortemente Acoplado</MudText>
+<MudText Class="mb-8">
+    Imagine uma classe OrderProcessorService (módulo de alto nível) responsável por processar pagamentos. Em uma
+    implementação ingênua, esta classe pode instanciar diretamente um cliente de uma API de pagamentos específica, como
+    um StripeClient (módulo de baixo nível).
+    <br>
+    Esta abordagem apresenta vários problemas:
+    <li>
+        <b>Acoplamento:</b> O serviço de alto nível depende diretamente de um detalhe de implementação específico (a
+        biblioteca
+        da Stripe).
+    </li>
+    <li>
+        <b>Dificuldade de Teste:</b> A execução de testes de unidade tentará realizar chamadas reais à API da Stripe, o
+        que é lento, frágil e pode gerar custos.
+    </li>
+    <li> <b>Rigidez:</b> Se houver a necessidade de substituir a Stripe por outro provedor (como o Mercado Pago), será
+        necessário modificar o código interno do OrderProcessorService, violando o princípio de que classes devem ser
+        fechadas para modificação.
+    </li>
+</MudText>
+
+<MudText Typo="Typo.h6" GutterBottom="true">A Solução: Aplicação do DIP e Padrão Adapter</MudText>
+<MudText Class="mb-8">
+    Para resolver esses problemas, o DIP pode ser aplicado em conjunto com o padrão de projeto Adapter:
+    <br>
+    1. <b>Criação de uma Interface:</b> Define-se uma abstração, como uma interface PaymentGatewayInterface, contendo um
+    método genérico pay(Order $order).
+    <br>
+    2. <b>Criação de um Adaptador (Wrapper):</b> Cria-se uma classe concreta, por exemplo, StripePaymentGateway, que
+    implementa a PaymentGatewayInterface e "envelopa" as chamadas específicas para a biblioteca da Stripe.
+    <br>
+    3. <b>Injeção de Dependência:</b> O OrderProcessorService é modificado para receber a PaymentGatewayInterface em seu
+    construtor, em vez de instanciar a classe concreta diretamente.
+</MudText>
+
+<MudText Typo="Typo.h6" GutterBottom="true">Resultado Final</MudText>
+<MudText Class="mb-8">Com essa refatoração, o OrderProcessorService torna-se agnóstico em relação ao meio de pagamento
+    utilizado. Ele apenas interage com o contrato definido pela interface. Se no futuro for necessário integrar o
+    Mercado Pago, basta criar um novo adaptador (MercadoPagoPaymentGateway) que implemente a mesma interface, sem a
+    necessidade de alterar uma única linha de código no serviço de alto nível.
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">5. Benefícios Observados</MudText>
+<MudText Class="mb-8">A adoção do Princípio da Inversão de Dependência traz benefícios tangíveis para a base de código:
+    <li>
+        <b>Desacoplamento: </b>O código de alto nível (regras de negócio) não possui conhecimento sobre detalhes de
+        bibliotecas externas ou infraestrutura.
+    </li>
+    <li>
+        <b>Facilidade de Troca:</b> Substituir tecnologias de baixo nível, como bancos de dados, gateways de pagamento
+        ou APIs externas, torna-se uma tarefa simples e segura.
+    </li>
+    <li>
+        <b>Testes Eficientes:</b> É possível criar implementações falsas da interface (mocks) para testar a lógica de
+        negócio de forma rápida e isolada, sem depender de serviços externos ou conexões de rede.
+    </li>
+    <li>
+        <b>Conformidade com o OCP:</b> O sistema fica alinhado com o Princípio do Aberto/Fechado (Open/Closed
+        Principle), estando aberto para extensão (novos meios de pagamento) e fechado para modificação (a lógica central
+        permanece intacta).
+    </li>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">6. Relação com Arquitetura de Software</MudText>
+<MudText Class="mb-8">O DIP é o princípio fundamental que norteia a comunicação entre as diferentes camadas em
+    arquiteturas modernas. Na Arquitetura Hexagonal, por exemplo, as <b>Portas</b> representam as interfaces
+    (abstrações) definidas pelo domínio da aplicação, enquanto os <b>Adaptadores</b> são as implementações concretas
+    (detalhes) que se conectam a essas portas, garantindo que o núcleo da aplicação permaneça isolado e independente de
+    tecnologias externas.
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">Título</MudText>
+<MudText Class="mb-8">Texto</MudText>
+
+<MudText Class="mb-8">Texto</MudText>

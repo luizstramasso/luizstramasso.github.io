@@ -1,0 +1,96 @@
+@page "/principiosSolid/isp"
+
+<PageTitle>Princípio da Segregação por Interfaces(ISP))</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Princípio de Segregação de Interface (ISP)</MudText>
+<MudText Class="mb-8">O Princípio da Segregação de Interface (Interface Segregation Principle - ISP) é um conceito
+    fundamental na engenharia de software moderna. Este documento apresenta um resumo detalhado sobre o tema, baseado
+    nesse <MudLink Href="https://youtu.be/jHbI9ej5O1Y" Target="_blank" EndIcon="@Icons.Custom.Brands.YouTube">vídeo
+</MudLink>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">1. Definição do Princípio de Segregação de Interface (ISP)</MudText>
+<MudText Class="mb-8">
+    O Princípio de Segregação de Interface, que representa o "I" no acrônimo SOLID, estabelece que <b>"nenhuma classe
+    deve ser forçada a depender de métodos que não utiliza"</b>. Este princípio, formulado por Robert C. Martin
+    (Uncle Bob), advoga a criação de múltiplas interfaces específicas e concisas em detrimento de uma única interface
+    genérica e extensa. A aplicação do ISP está intrinsecamente ligada ao conceito de <b>abstração</b>, um dos pilares
+    fundamentais da programação orientada a objetos.
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">2. Objetivos Principais</MudText>
+<MudText Class="mb-8">
+    O ISP visa solucionar a questão das <b>interfaces "gordas" ou "infladas"</b>. Quando uma interface contém um número
+    excessivo de métodos, as classes que a implementam são compelidas a fornecer definições para comportamentos que não
+    são relevantes para suas funcionalidades específicas. Isso acarreta diversas consequências negativas:
+    <li>
+        <b>Código Morto:</b> Métodos são implementados apenas para cumprir o contrato da interface, frequentemente
+        resultando em exceções como NotImplementedException.
+    </li>
+    <li>
+        <b>Baixa Coesão:</b> As classes assumem responsabilidades que não deveriam, diluindo seu propósito principal.
+    </li>
+    <li>
+        <b>Alto Acoplamento:</b> Alterações em um método da interface podem impactar classes que sequer utilizam aquele
+        método, dificultando a manutenção.
+    </li>
+    <li>
+        <b>Violação de Outros Princípios:</b> A desobediência ao ISP frequentemente leva à violação de outros princípios
+        SOLID, como o SRP (Princípio da Responsabilidade Única), o OCP (Princípio Aberto/Fechado) e o LSP (Princípio da
+        Substituição de Liskov).
+    </li>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">3. Exemplo Prático: Sistema de Pagamentos</MudText>
+<MudText Class="mb-8">
+    Um exemplo prático ilustra a importância do ISP em um sistema de pagamentos:
+    <li>
+        <b>Cenário Inicial:</b> Uma interface PaymentMethodInterface com um método pay(). Classes como CreditCard e
+        PayPal a implementam de forma adequada.
+    </li>
+    <li>
+        <b>A Evolução e o Erro:</b> Com a introdução do <b>PIX</b>, que requer a geração de um QR Code, o método
+        generateQrCode() é adicionado à interface principal. Consequentemente, CreditCard e PayPal são forçados a
+        implementar um método que não lhes é pertinente, resultando em implementações vazias ou com exceções.
+    </li>
+    <li>
+        <b>O Agravamento:</b> A inclusão do <b>Boleto</b>, que necessita de um método generateDocument(), infla ainda
+        mais a interface principal, obrigando todas as outras classes (Cartão, PayPal, PIX) a implementar um método de
+        geração de documento que não utilizam.
+    </li>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">4. Como Aplicar o Princípio no Código</MudText>
+<MudText Class="mb-8">
+    A solução para evitar interfaces infladas é a <b>segregação</b> das interfaces, baseando-se em comportamentos
+    específicos:
+    <ol>
+        <li>
+            <b>Mantenha a Interface Base Simples:</b> A interface PaymentMethodInterface deve conter apenas os métodos
+            comuns a todos os métodos de pagamento, como pay().
+        </li>
+        <li>
+            <b>Crie Interfaces de Comportamento Específicas:</b>
+            <ul>
+                <li>QrCodeGenerableInterface: Contendo apenas o método generateQrCode().</li>
+                <li>DocumentGenerableInterface: Contendo apenas o método generateDocument().</li>
+            </ul>
+        </li>
+        <li>
+            <b>Implementação Composta:</b> As classes devem implementar apenas as interfaces que correspondem às suas
+            responsabilidades:
+            <ul>
+                <li>A classe Pix implementa PaymentMethodInterface e QrCodeGenerableInterface.</li>
+                <li>A classe Boleto implementa PaymentMethodInterface e DocumentGenerbleInterface.</li>
+                <li>A classe CreditCard implementa apenas PaymentMethodInterface.</li>
+            </ul>
+        </li>
+    </ol>
+</MudText>
+
+<MudText Typo="Typo.h5" GutterBottom="true">Conclusão</MudText>
+<MudText Class="mb-8">O foco principal na aplicação do ISP deve ser a <b>abstração correta</b>. É crucial dedicar tempo
+    para garantir que a abstração do sistema reflita de maneira coesa o mundo real. Uma abstração inadequada no início
+    do projeto pode levar a uma cascata de problemas de manutenção e aumento dos custos de desenvolvimento a longo
+    prazo.
+</MudText>

@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branchs: ["main"]
+    branches: ["main"]
 
   workflow_dispatch:
 
@@ -17,9 +17,9 @@ concurrency:
 
 jobs:
   deploy:
-    enviroment:
+    environment:
       name: github-pages
-      url: ${{ steps.deplyment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout
